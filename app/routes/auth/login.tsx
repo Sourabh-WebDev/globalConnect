@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { FaHome } from "react-icons/fa";
 
 export const loader = () => null;
 
@@ -104,6 +105,9 @@ export default function Login() {
 
       {/* Right Form Side */}
       <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12 dark:bg-gray-900 bg-gray-100">
+       <div className="absolute top-4 right-7">
+              <FaHome onClick={() => navigate("/")} className="text-4xl text-indigo-600 dark:text-indigo-400 mb-4" />
+            </div>
         <div className="w-full max-w-sm bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
             Sign in to your account

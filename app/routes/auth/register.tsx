@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { FaHome } from "react-icons/fa";
 
 export const loader = () => null;
 
@@ -29,7 +30,7 @@ export default function Register() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmitt = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
@@ -45,7 +46,7 @@ export default function Register() {
       };
       delete payload.confirmPassword;
 
-      const response = await axios.post(`${API_URL}User/register`, payload);
+      const response = await axios.post(`https://globalconnect.somee.com/api/User/register`, payload);
 
       if (response.status === 200 || response.status === 201) {
         setSuccess("Registration successful! Redirecting to login...");
@@ -59,6 +60,51 @@ export default function Register() {
       } else {
         setError("Unexpected error");
       }
+    }
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError(null);
+    setSuccess(null);
+
+    // Validate required fields
+    if (!form.phone || !form.lastname || !form.password) {
+      setError("Phone, Last Name, and Password are required.");
+      return;
+    }
+
+    // Optional: check password match
+    if (form.confirmPassword && form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      // Remove confirmPassword and convert pincode to number
+      const { confirmPassword, ...rest } = form;
+      const payload = {
+        ...rest,
+        pincode: Number(form.pincode),
+      };
+
+      const response = await fetch(`https://globalconnect.somee.com/api/User/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setSuccess("Registration successful! Redirecting to login...");
+        setTimeout(() => navigate("/"), 2000);
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Registration failed. Try again.");
+      }
+    } catch (err: any) {
+      setError(err.message || "Unexpected error");
     }
   };
 
@@ -84,6 +130,9 @@ export default function Register() {
 
       {/* Right Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12">
+      <div className="absolute top-4 right-7">
+        <FaHome onClick={() => navigate("/") } className="text-4xl text-indigo-600 dark:text-indigo-400 mb-4" />
+      </div>
         <div className="w-full max-w-2xl bg-white dark:bg-gray-800 shadow-lg rounded-lg p-8">
           <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-6">
             Create Your Account
@@ -157,7 +206,7 @@ export default function Register() {
 
           <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
-            <a href="/" className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+            <a href="/login" className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
               Sign in
             </a>
           </p>

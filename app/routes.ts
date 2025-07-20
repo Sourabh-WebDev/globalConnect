@@ -1,8 +1,11 @@
 import { type RouteConfig, index, layout, route } from "@react-router/dev/routes";
 
 export default [
-  // login page is the home page (`/`)
-  index("./routes/auth/login.tsx"),
+   // home page is now `/`
+  index("./routes/home.tsx"),
+
+  // /login route
+  route("login", "./routes/auth/login.tsx"),
 
   // layout wraps `register` route
   layout("./routes/auth/layout.tsx", [
