@@ -12,7 +12,7 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmitt = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
@@ -42,6 +42,48 @@ export default function Login() {
       }
     }
   };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setError(null);
+
+  try {
+    const loginResponse = await fetch(`${API_URL}User/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        phone,
+        password,
+      }),
+    });
+
+    if (!loginResponse.ok) {
+      const errorData = await loginResponse.json();
+      throw new Error(errorData.message || "Login failed");
+    }
+
+    const loginData = await loginResponse.json();
+    const { token } = loginData;
+    localStorage.setItem("token", token);
+
+    const authResponse = await fetch(`${API_URL}User/secure`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (authResponse.ok) {
+      navigate("/dashboard");
+    } else {
+      setError("Token setup failed. Please try again.");
+    }
+  } catch (err: any) {
+    setError(err.message || "Unexpected error");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
