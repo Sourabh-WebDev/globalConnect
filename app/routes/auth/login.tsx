@@ -48,7 +48,7 @@ export default function Login() {
   setError(null);
 
   try {
-    const loginResponse = await fetch(`${API_URL}User/login`, {
+    const loginResponse = await fetch(`https://globalconnect.somee.com/api/User/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
