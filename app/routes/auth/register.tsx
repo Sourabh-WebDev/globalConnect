@@ -30,7 +30,7 @@ export default function Register() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitt = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
     setSuccess(null);
@@ -63,50 +63,6 @@ export default function Register() {
     }
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-
-    // Validate required fields
-    if (!form.phone || !form.lastname || !form.password) {
-      setError("Phone, Last Name, and Password are required.");
-      return;
-    }
-
-    // Optional: check password match
-    if (form.confirmPassword && form.password !== form.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    try {
-      // Remove confirmPassword and convert pincode to number
-      const { confirmPassword, ...rest } = form;
-      const payload = {
-        ...rest,
-        pincode: Number(form.pincode),
-      };
-
-      const response = await fetch(`https://globalconnect.somee.com/api/User/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
-        setSuccess("Registration successful! Redirecting to login...");
-        setTimeout(() => navigate("/"), 2000);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Registration failed. Try again.");
-      }
-    } catch (err: any) {
-      setError(err.message || "Unexpected error");
-    }
-  };
 
   const fieldClasses =
     "w-full rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm text-gray-900 dark:text-white dark:placeholder-gray-400 outline outline-1 outline-gray-300 dark:outline-gray-600 focus:outline-2 focus:outline-indigo-600";
