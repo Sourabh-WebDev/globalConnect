@@ -69,7 +69,7 @@ export default function Login() {
     const { token } = loginData;
     localStorage.setItem("token", token);
 
-    const authResponse = await fetch(`${API_URL}User/secure`, {
+    const authResponse = await fetch(`https://globalconnect.somee.com/api/User/secure`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
