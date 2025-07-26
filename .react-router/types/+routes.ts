@@ -22,12 +22,15 @@ type Pages = {
   "/dashboard": {
     params: {};
   };
+  "/timesheet": {
+    params: {};
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/login" | "/register" | "/dashboard";
+    page: "/" | "/login" | "/register" | "/dashboard" | "/timesheet";
   };
   "./routes/home.tsx": {
     id: "routes/home";
@@ -45,8 +48,16 @@ type RouteFiles = {
     id: "routes/auth/register";
     page: "/register";
   };
+  "./routes/global-layout.tsx": {
+    id: "routes/global-layout";
+    page: "/dashboard" | "/timesheet";
+  };
   "./routes/dashboard.tsx": {
     id: "routes/dashboard";
     page: "/dashboard";
+  };
+  "./routes/timesheet.tsx": {
+    id: "routes/timesheet";
+    page: "/timesheet";
   };
 };
