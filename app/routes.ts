@@ -15,6 +15,7 @@ export default [
   layout("./routes/global-layout.tsx", [
     route("dashboard", "./routes/dashboard.tsx"),
     route("timesheet", "./routes/timesheet.tsx"),
+    route("timesheetAdd", "./routes/timesheetAdd.tsx"),
   ]),
 
   // /dashboard rout

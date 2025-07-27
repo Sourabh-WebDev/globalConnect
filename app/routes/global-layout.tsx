@@ -1,8 +1,28 @@
 import { Link, Outlet, useLocation } from "react-router";
+import axiosInstance from "~/utils/axiosInstance";
 
+
+export const removeToken = () => {
+    localStorage.removeItem("token");
+};
 
 export default function DashboardLayout() {
+    const API_URL = import.meta.env.VITE_API_URL;
+
     const location = useLocation();
+    const logout = async () => {
+        try {
+            // Call Logout API
+            await axiosInstance.post(`${API_URL}/Auth/logout`);
+        } catch (err) {
+            console.error("Logout API failed:", err);
+            // Even if API fails, proceed to clear token
+        } finally {
+            // Clear token and redirect
+            removeToken();
+            window.location.href = "/login";
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -25,7 +45,7 @@ export default function DashboardLayout() {
                     </h1>
                     <div className="flex items-center gap-4">
                         <span className="text-sm text-gray-600">Welcome, User</span>
-                        <button className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm">
+                        <button onClick={logout} className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm">
                             Logout
                         </button>
                     </div>
