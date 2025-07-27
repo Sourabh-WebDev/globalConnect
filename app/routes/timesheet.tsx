@@ -4,22 +4,34 @@ import { useEffect, useState } from 'react';
 import { DatePicker, Spin, message } from 'antd';
 import type { Dayjs } from 'dayjs';
 import dayjs from 'dayjs';
-import axios from 'axios';
-import { useRouteError } from 'react-router';
+import { useNavigate } from 'react-router';
 import axiosInstance from '~/utils/axiosInstance';
 
 const { RangePicker } = DatePicker;
 
 type TimesheetEntry = {
-    date: string;
-    goal: string;
-    reports: string[];
+    goalName: string;
+    target: string;
+    goalDate: string;
+    achieved: string;
+    status0002: string;
+    status0204: string;
+    status0406: string;
+    status0608: string;
+    status0810: string;
+    status1012: string;
+    status1214: string;
+    status1416: string;
+    status1618: string;
+    status1820: string;
+    status2022: string;
+    status2224: string;
 };
 
 export default function ViewTimesheetPage() {
     const API_URL = import.meta.env.VITE_API_URL;
+    const navigate = useNavigate();
 
-    const router = useRouteError();
     const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null] | null>(null);
     const [data, setData] = useState<TimesheetEntry[]>([]);
     const [loading, setLoading] = useState(false);
@@ -44,7 +56,7 @@ export default function ViewTimesheetPage() {
     };
 
     useEffect(() => {
-        fetchTimesheet(); // Load all data by default
+        fetchTimesheet();
     }, []);
 
     const handleDateChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
@@ -55,8 +67,21 @@ export default function ViewTimesheetPage() {
             const endISO = dates[1].endOf('day').toISOString();
             fetchTimesheet(startISO, endISO);
         } else {
-            fetchTimesheet(); // Reset to all if cleared
+            // 🟢 Clear filter → fetch all data
+            fetchTimesheet(); // ← this ensures full dataset is shown
         }
+    };
+
+
+    const extractReports = (entry: TimesheetEntry): string[] => {
+        const slots = [
+            "status0002", "status0204", "status0406", "status0608",
+            "status0810", "status1012", "status1214", "status1416",
+            "status1618", "status1820", "status2022", "status2224"
+        ];
+        return slots
+            .map((slot) => entry[slot as keyof TimesheetEntry])
+            .filter((r) => r && r.trim() !== "");
     };
 
     return (
@@ -71,7 +96,7 @@ export default function ViewTimesheetPage() {
                         format="YYYY-MM-DD"
                     />
                     <button
-                        // onClick={() => na.push("/timesheetAdd")}
+                        onClick={() => navigate("/timesheetAdd")}
                         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                     >
                         Add Report
@@ -91,14 +116,18 @@ export default function ViewTimesheetPage() {
                             className="bg-white shadow rounded-xl p-6 border border-gray-200"
                         >
                             <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-lg font-semibold">{entry.date}</h2>
+                                <h2 className="text-lg font-semibold">{entry.goalDate}</h2>
                                 <span className="text-sm text-gray-500">Goal of the day</span>
                             </div>
-                            <p className="mb-4 text-gray-700">🎯 <span className="font-medium">{entry.goal}</span></p>
+                            <p className="mb-4 text-gray-700">
+                                🎯 <span className="font-medium">{entry.goalName}</span><br />
+                                📌 Target: {entry.target}<br />
+                                ✅ Achieved: {entry.achieved}
+                            </p>
 
                             <div className="space-y-2">
                                 <h3 className="text-sm font-medium text-gray-600">2-Hour Reports:</h3>
-                                {entry.reports.map((report, i) => (
+                                {extractReports(entry).map((report, i) => (
                                     <div
                                         key={i}
                                         className="p-3 bg-gray-50 border border-gray-100 rounded"

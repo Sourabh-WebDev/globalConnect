@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import axiosInstance from "~/utils/axiosInstance";
 
@@ -24,6 +25,24 @@ export default function DashboardLayout() {
         }
     };
 
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good Morning 🌅";
+        if (hour < 17) return "Good Afternoon 🌄";
+        return "Good Evening 🌆";
+    };
+
+    const [greeting, setGreeting] = useState(getGreeting());
+
+    // useEffect(() => {
+    //     // Optional: update greeting every hour if needed
+    //     const interval = setInterval(() => {
+    //         setGreeting(getGreeting());
+    //     }, 60 * 60 * 1000); // every hour
+
+    //     return () => clearInterval(interval);
+    // }, []);
+
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
             {/* Fixed Sidebar */}
@@ -41,7 +60,7 @@ export default function DashboardLayout() {
                 {/* Sticky Header */}
                 <header className="sticky top-0 z-10 bg-white shadow px-6 py-4 flex justify-between items-center">
                     <h1 className="text-xl font-semibold capitalize">
-                        {location.pathname.replace("/dashboard", "").slice(1) || "Dashboard"}
+                        {greeting}
                     </h1>
                     <div className="flex items-center gap-4">
                         <span className="text-sm text-gray-600">Welcome, User</span>
