@@ -28,6 +28,22 @@ type TimesheetEntry = {
     status2224: string;
 };
 
+const slotLabels: { key: keyof TimesheetEntry; label: string }[] = [
+    { key: "status0002", label: "00:00 - 02:00" },
+    { key: "status0204", label: "02:00 - 04:00" },
+    { key: "status0406", label: "04:00 - 06:00" },
+    { key: "status0608", label: "06:00 - 08:00" },
+    { key: "status0810", label: "08:00 - 10:00" },
+    { key: "status1012", label: "10:00 - 12:00" },
+    { key: "status1214", label: "12:00 - 14:00" },
+    { key: "status1416", label: "14:00 - 16:00" },
+    { key: "status1618", label: "16:00 - 18:00" },
+    { key: "status1820", label: "18:00 - 20:00" },
+    { key: "status2022", label: "20:00 - 22:00" },
+    { key: "status2224", label: "22:00 - 24:00" },
+];
+
+
 export default function ViewTimesheetPage() {
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -127,14 +143,20 @@ export default function ViewTimesheetPage() {
 
                             <div className="space-y-2">
                                 <h3 className="text-sm font-medium text-gray-600">2-Hour Reports:</h3>
-                                {extractReports(entry).map((report, i) => (
-                                    <div
-                                        key={i}
-                                        className="p-3 bg-gray-50 border border-gray-100 rounded"
-                                    >
-                                        <span className="font-medium text-gray-700">Entry {i + 1}:</span> {report}
-                                    </div>
-                                ))}
+                                {slotLabels.map(({ key, label }, i) => {
+                                    const value = entry[key];
+                                    if (!value || value.trim() === "") return null;
+
+                                    return (
+                                        <div
+                                            key={i}
+                                            className="p-3 bg-gray-50 border border-gray-100 rounded"
+                                        >
+                                            <span className="font-medium text-gray-700">{label}:</span> {value}
+                                        </div>
+                                    );
+                                })}
+
                             </div>
                         </div>
                     ))}
