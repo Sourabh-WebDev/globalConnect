@@ -42,6 +42,7 @@ export default function DashboardLayout() {
 
     //     return () => clearInterval(interval);
     // }, []);
+const storedUsername = localStorage.getItem("username");
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">
@@ -63,7 +64,7 @@ export default function DashboardLayout() {
                         {greeting}
                     </h1>
                     <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-600">Welcome, User</span>
+                        <span className="text-sm text-gray-600">Welcome, {storedUsername}</span>
                         <button onClick={logout} className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 text-sm">
                             Logout
                         </button>

@@ -33,6 +33,8 @@ export default function Login() {
       });
 
       if (authResponse.status === 200) {
+      const { username } = authResponse.data; // Get username from response
+      localStorage.setItem("username", username); // Store it
         navigate("/dashboard");
         setLoading(false);
       } else {
