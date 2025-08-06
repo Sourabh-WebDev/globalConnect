@@ -1,9 +1,11 @@
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
 import axiosInstance from "~/utils/axiosInstance";
 
 export default function TimesheetPage() {
     const API_URL = import.meta.env.VITE_API_URL;
-
+    const navigate = useNavigate();
     const [goalName, setGoalName] = useState("");
     const [target, setTarget] = useState("");
     const [goalDate, setGoalDate] = useState(new Date().toISOString().slice(0, 10));
@@ -14,9 +16,9 @@ export default function TimesheetPage() {
     const [errorMsg, setErrorMsg] = useState("");
 
     const [timeSlots, setTimeSlots] = useState<Record<string, string>>({
-        status0002: "",
-        status0204: "",
-        status0406: "",
+        status0002: "Sleeping Time",
+        status0204: "Sleeping Time",
+        status0406: "Sleeping Time",
         status0608: "",
         status0810: "",
         status1012: "",
@@ -53,16 +55,15 @@ export default function TimesheetPage() {
             const response = await axiosInstance.post(`${API_URL}Timesheet/CreateTimesheet`, [timesheet]);
 
             if (response.status === 200 || response.status === 201) {
-                setSuccessMsg("Timesheet saved successfully!");
                 setGoalName("");
                 setTarget("");
                 setGoalDate(new Date().toISOString().slice(0, 10));
                 setAchieved("In Progress");
                 setRemark("");
                 setTimeSlots({
-                    status0002: "",
-                    status0204: "",
-                    status0406: "",
+                    status0002: "Sleeping Time",
+                    status0204: "Sleeping Time",
+                    status0406: "Sleeping Time",
                     status0608: "",
                     status0810: "",
                     status1012: "",
@@ -73,6 +74,9 @@ export default function TimesheetPage() {
                     status2022: "",
                     status2224: "",
                 });
+                navigate("/timesheet");
+                toast.success("Timesheet saved successfully!");
+
             } else {
                 setErrorMsg("Unexpected response. Please try again.");
             }
@@ -185,7 +189,7 @@ export default function TimesheetPage() {
                                 onChange={(e) => handleChangeSlot(key, e.target.value)}
                                 className="border rounded px-3 py-2"
                                 placeholder="Work summary"
-                                disabled={nightSlots.includes(key)}
+                            // disabled={nightSlots.includes(key)}
                             />
                         </div>
                     ))}

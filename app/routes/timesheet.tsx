@@ -72,7 +72,8 @@ export default function ViewTimesheetPage() {
     };
 
     useEffect(() => {
-        fetchTimesheet();
+
+        fetchTimesheet(new Date().toISOString(), new Date().toISOString());
     }, []);
 
     const handleDateChange = (dates: [Dayjs | null, Dayjs | null] | null) => {

@@ -9,6 +9,7 @@ export const removeToken = () => {
 
 export default function DashboardLayout() {
     const API_URL = import.meta.env.VITE_API_URL;
+    const [storedUsername, setStoredUsername] = useState<string | null>(null);
 
     const location = useLocation();
     const logout = async () => {
@@ -42,7 +43,12 @@ export default function DashboardLayout() {
 
     //     return () => clearInterval(interval);
     // }, []);
-const storedUsername = localStorage.getItem("username");
+
+    useEffect(() => {
+        const username = localStorage.getItem("username");
+        setStoredUsername(username);
+    }, []);
+
 
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900">

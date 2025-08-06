@@ -18,6 +18,10 @@ export default [
     route("timesheetAdd", "./routes/timesheetAdd.tsx"),
   ]),
 
+
+  // 🔥 Catch-all 404 route
+  route("*", "./routes/not-found.tsx"),
+
   // /dashboard rout
 ] satisfies RouteConfig;
 

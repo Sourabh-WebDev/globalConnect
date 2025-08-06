@@ -28,12 +28,17 @@ type Pages = {
   "/timesheetAdd": {
     params: {};
   };
+  "/*": {
+    params: {
+      "*": string;
+    };
+  };
 };
 
 type RouteFiles = {
   "root.tsx": {
     id: "root";
-    page: "/" | "/login" | "/register" | "/dashboard" | "/timesheet" | "/timesheetAdd";
+    page: "/" | "/login" | "/register" | "/dashboard" | "/timesheet" | "/timesheetAdd" | "/*";
   };
   "./routes/home.tsx": {
     id: "routes/home";
@@ -66,5 +71,9 @@ type RouteFiles = {
   "./routes/timesheetAdd.tsx": {
     id: "routes/timesheetAdd";
     page: "/timesheetAdd";
+  };
+  "./routes/not-found.tsx": {
+    id: "routes/not-found";
+    page: "/*";
   };
 };
