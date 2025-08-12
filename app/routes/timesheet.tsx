@@ -43,7 +43,6 @@ const slotLabels: { key: keyof TimesheetEntry; label: string }[] = [
     { key: "status2224", label: "22:00 - 24:00" },
 ];
 
-
 export default function ViewTimesheetPage() {
     const API_URL = import.meta.env.VITE_API_URL;
     const navigate = useNavigate();
@@ -72,7 +71,6 @@ export default function ViewTimesheetPage() {
     };
 
     useEffect(() => {
-
         fetchTimesheet(new Date().toISOString(), new Date().toISOString());
     }, []);
 
@@ -80,63 +78,54 @@ export default function ViewTimesheetPage() {
         setDateRange(dates);
 
         if (dates?.[0] && dates?.[1]) {
-            const startISO = dates[0].startOf('day').toISOString();
-            const endISO = dates[1].endOf('day').toISOString();
-            fetchTimesheet(startISO, endISO);
+            const startLocal = dates[0].startOf('day').format('YYYY-MM-DD HH:mm:ss');
+            const endLocal = dates[1].endOf('day').format('YYYY-MM-DD HH:mm:ss');
+            fetchTimesheet(startLocal, endLocal);
         } else {
-            // 🟢 Clear filter → fetch all data
-            fetchTimesheet(); // ← this ensures full dataset is shown
+            fetchTimesheet();
         }
-    };
-
-
-    const extractReports = (entry: TimesheetEntry): string[] => {
-        const slots = [
-            "status0002", "status0204", "status0406", "status0608",
-            "status0810", "status1012", "status1214", "status1416",
-            "status1618", "status1820", "status2022", "status2224"
-        ];
-        return slots
-            .map((slot) => entry[slot as keyof TimesheetEntry])
-            .filter((r) => r && r.trim() !== "");
     };
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
-                <h1 className="text-2xl font-bold">📅 View Timesheet</h1>
-                <div className="flex items-center gap-4">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <h1 className="text-xl sm:text-2xl font-bold">📅 View Timesheet</h1>
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                     <RangePicker
                         onChange={handleDateChange}
                         allowClear
-                        className="bg-white p-1 rounded border"
+                        className="bg-white p-1 rounded border w-full sm:w-auto"
                         format="YYYY-MM-DD"
                     />
                     <button
                         onClick={() => navigate("/timesheetAdd")}
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full sm:w-auto"
                     >
                         Add Report
                     </button>
                 </div>
             </div>
 
+            {/* Data display */}
             {loading ? (
-                <Spin tip="Loading timesheets..." />
+                <div className="flex justify-center py-10">
+                    <Spin tip="Loading timesheets..." />
+                </div>
             ) : data.length === 0 ? (
-                <p className="text-gray-500">No entries in selected date range.</p>
+                <p className="text-gray-500 text-center">No entries in selected date range.</p>
             ) : (
                 <div className="space-y-6">
                     {data.map((entry, idx) => (
                         <div
                             key={idx}
-                            className="bg-white shadow rounded-xl p-6 border border-gray-200"
+                            className="bg-white shadow rounded-xl p-4 sm:p-6 border border-gray-200"
                         >
-                            <div className="flex justify-between items-center mb-4">
-                                <h2 className="text-lg font-semibold">{entry.goalDate}</h2>
+                            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-1">
+                                <h2 className="text-base sm:text-lg font-semibold">{entry.goalDate}</h2>
                                 <span className="text-sm text-gray-500">Goal of the day</span>
                             </div>
-                            <p className="mb-4 text-gray-700">
+                            <p className="mb-4 text-gray-700 text-sm sm:text-base">
                                 🎯 <span className="font-medium">{entry.goalName}</span><br />
                                 📌 Target: {entry.target}<br />
                                 ✅ Achieved: {entry.achieved}
@@ -151,13 +140,12 @@ export default function ViewTimesheetPage() {
                                     return (
                                         <div
                                             key={i}
-                                            className="p-3 bg-gray-50 border border-gray-100 rounded"
+                                            className="p-3 bg-gray-50 border border-gray-100 rounded text-sm sm:text-base"
                                         >
                                             <span className="font-medium text-gray-700">{label}:</span> {value}
                                         </div>
                                     );
                                 })}
-
                             </div>
                         </div>
                     ))}
